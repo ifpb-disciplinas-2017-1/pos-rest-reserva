@@ -64,9 +64,13 @@ public class AutorResource {
                 .created(location)
                 .entity(autor)
                 .build();
-
     }
 
+//return Response
+// .status(Response.Status.BAD_REQUEST)
+// .entity(“Invalid address provided.”)
+// .type(MediaType.APPLICATION_JSON)
+// .build();
 //    @GET
 //    @Path("filtro/{primeiraLetra}")
 //    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

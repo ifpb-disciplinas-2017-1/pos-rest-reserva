@@ -29,6 +29,17 @@ public class Livro implements Serializable {
     @OneToMany
     private List<Autor> autores = new ArrayList<>();
 
+    public Livro() {
+    }
+
+    
+    public Livro(String edicao, String titulo, String descricao) {
+        this.edicao = edicao;
+        this.titulo = titulo;
+        this.descricao = descricao;
+    }
+
+    
     public int getId() {
         return id;
     }
