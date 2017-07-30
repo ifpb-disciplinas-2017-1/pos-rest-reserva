@@ -8,10 +8,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
@@ -27,6 +27,7 @@ import javax.ws.rs.core.UriInfo;
  */
 @Path("livro")
 @Stateless
+@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class LivroResource {
 
     // ../api/reserva/1?status=agendada
@@ -37,8 +38,19 @@ public class LivroResource {
     private ResourceContext resourceContext;
 
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response autores() {
+    @Path("{idLivro}")
+    public Response livroComId(@PathParam("idLivro") int idLivro,
+            @Context UriInfo uriInfo) {
+        Livro livro = em.find(Livro.class, idLivro);
+        LivroLink response = LivroLink.of(livro, uriInfo);
+        return Response
+                .ok()
+                .entity(response)
+                .build();
+    }
+    @GET
+//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response todosOsLivros() {
         List<Livro> livros = em.createQuery("FROM Livro l", Livro.class).getResultList();
         GenericEntity<List<Livro>> entity = new GenericEntity<List<Livro>>(livros) {
         };
@@ -51,7 +63,7 @@ public class LivroResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+//    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response novoLivro(
             @BeanParam LivroValue livroValue,
             @Context UriInfo uriInfo) {

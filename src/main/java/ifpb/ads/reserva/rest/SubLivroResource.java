@@ -68,7 +68,6 @@ public class SubLivroResource {
                 .stream()
                 .filter(a -> a.getId() == idAutor)
                 .findFirst();
-//                .orElse(null);
 
         if (!autor.isPresent()) {
             return Response.noContent().build();

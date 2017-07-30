@@ -2,21 +2,18 @@ package ifpb.ads.reserva.rest;
 
 import ifpb.ads.reserva.domain.Autor;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -28,33 +25,49 @@ import javax.ws.rs.core.UriInfo;
  */
 @Path("autor")
 @Stateless
+@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class AutorResource {
 
-    @PersistenceContext
-    private EntityManager em;
+//    @PersistenceContext
+//    private EntityManager em;
+    @Inject
+    private ServiceAutor service;
 
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("{idAutor}")
+    public Response autorPorId(@PathParam("idAutor") int idAutor) {
+        Autor autor = service.autorComId(idAutor);
+        return Response
+                .ok(autor)
+                .build();
+    }
+
+    @GET
     public Response autores() {
-        List<Autor> autores = em.createQuery("FROM Autor a", Autor.class).getResultList();
+        List<Autor> autores = service.todosOsAutores();
         GenericEntity<List<Autor>> entity = new GenericEntity<List<Autor>>(autores) {
         };
 
+//        URI uri = URI.create("http://example.com/api/books/1/chapter/2");
+//        Link link = Link.fromUri(uri).rel("prev").title("previous chapter").build();
         return Response
                 .ok()
+                //                .links(link)
+//                .link("http://example.com/api/books/1/chapter/2", "prev")
+//                .link("http://example.com/api/books/1/chapter/1", "next")
                 .entity(entity)
                 .build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response novoAutor(
             Autor autor,
             @Context UriInfo uriInfo) {
 
         //Não façam isso em casa!
-        em.persist(autor);
+//        em.persist(autor);
+        service.salvar(autor);
         String id = String.valueOf(autor.getId());
         URI location = uriInfo.getBaseUriBuilder() // ../api
                 .path(AutorResource.class) // ../api/autor
