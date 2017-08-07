@@ -13,7 +13,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -48,13 +47,8 @@ public class AutorResource {
         GenericEntity<List<Autor>> entity = new GenericEntity<List<Autor>>(autores) {
         };
 
-//        URI uri = URI.create("http://example.com/api/books/1/chapter/2");
-//        Link link = Link.fromUri(uri).rel("prev").title("previous chapter").build();
         return Response
                 .ok()
-                //                .links(link)
-//                .link("http://example.com/api/books/1/chapter/2", "prev")
-//                .link("http://example.com/api/books/1/chapter/1", "next")
                 .entity(entity)
                 .build();
     }
